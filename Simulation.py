@@ -1,3 +1,5 @@
+from asyncio import wait
+import time
 import Classes
 
 def initialize_population(population_count, population_type, *args):
@@ -22,14 +24,14 @@ def zombie_simulation(susceptible_count, infected_count, removed_count):
     total_participants = susceptible_count + infected_count + removed_count
     alive_population = susceptible_count + infected_count
 
-    #susceptible = initialize_population(susceptible_count, Classes.Susceptible)
-    #infected = initialize_population(infected_count, Classes.Infected)
+    susceptible = initialize_population(susceptible_count, Classes.Susceptible)
+    infected = initialize_population(infected_count, Classes.Infected)
     removed = initialize_population(removed_count, Classes.Removed, True)
 
     all_susceptibles_dead = False
     all_infected_dead = False
 
-    while alive_population <= 0:
+    while alive_population > 0:
         if not all_susceptibles_dead:
             if susceptible_count <= 0:
                 # --// Show on chart when all susceptibles are dead
@@ -40,13 +42,32 @@ def zombie_simulation(susceptible_count, infected_count, removed_count):
                 # --// Show on chart when all infected are dead
                 all_infected_dead = True
 
+        # --// Make all susceptible objects act
+        for susceptible_obj in susceptible:
+            susceptible_obj.act(infected)
 
+            object_is_alive = susceptible_obj.checkalive()
+            if not object_is_alive:
+                alive_population -= 1
 
+                dead_susceptible = Classes.Removed(False, susceptible_obj)
+                susceptible.remove(susceptible_obj)
+                removed.append(dead_susceptible)
 
+        for infected_obj in infected:
+            infected_obj.act(susceptible)
+            object_is_alive = infected_obj.checkalive()
 
+            if not object_is_alive:
+                alive_population -= 1
 
+                dead_susceptible = Classes.Removed(False, infected_obj)
+                infected.remove(infected_obj)
+                removed.append(infected_obj)
+        #time.sleep(.1)
+    print(len(removed))
 
-zombie_simulation(0,0,1)
+zombie_simulation(15,30,0)
 
 
 

@@ -25,8 +25,8 @@ class Person:
             elif (self.position["y"] > WORLD_SIZE):
                 self.position["y"] = WORLD_SIZE
 
-        self.position['x'] += random.randint(-2, 2)
-        self.position['y'] += random.randint(-2, 2)
+        self.position['x'] += random.randint(-6, 6)
+        self.position['y'] += random.randint(-6, 6)
         world_limit()
 
     def feed(self, food):
@@ -54,7 +54,7 @@ class Susceptible(Person):
         super().__init__(name)
 
     def check_infected_near(self, infected_list):
-        close_threshold = 5
+        close_threshold = 10
         for infected in infected_list:
             if distance(self.position, infected.position) < close_threshold:
                 return True
@@ -62,17 +62,19 @@ class Susceptible(Person):
         return False
 
     def scavenge(self, food_list):
-        find_threshold = 5
+        find_threshold = 10
 
         for Food in food_list:
             if distance(self.position, Food) < find_threshold:
                 self.feed(Food)
                 break
 
-    def act(self, infected_list, food_list):
+    def act(self, infected_list):
+        #food_list
         self.roam()
         if not self.check_infected_near(infected_list):
-            self.scavenge(food_list)
+            pass
+            #self.scavenge(food_list)
 
         self.hunger -= 2
 
@@ -81,9 +83,10 @@ class Infected(Person):
         super().__init__(name)
 
     def hunt(self, susceptible_list):
-        find_threshold = 5
+        find_threshold = 10
         for susceptible in susceptible_list:
             if distance(self.position, susceptible.position) < find_threshold:
+                print('kill')
                 susceptible.health = 0
                 self.feed(susceptible)
                 break
@@ -103,7 +106,7 @@ class Removed:
             self.classBeforeDeath = "Unknown"
         else:
             # --// Removed object created in simulation from a dead person
-            previously_living_object = args
+            previously_living_object = args[0]
             self.name = previously_living_object.name
             self.causeOfDeath = previously_living_object.causeOfDeath
             self.classBeforeDeath = type(previously_living_object)
