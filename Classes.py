@@ -82,15 +82,17 @@ class Infected(Person):
                 break
 
 class Removed:
-    def __init__(self, existed, *args):
-        if existed:
+    def __init__(self, dead_on_arrival, *args):
+        if dead_on_arrival:
+            # --// Removed object created in simulation without a previous existance
+            name = args[0]
+            self.name = name
+            self.causeOfDeath = "Was already dead"
+            self.classBeforeDeath = "Unknown"
+        else:
+            # --// Removed object created in simulation from a dead person
             previously_living_object = args
             self.name = previously_living_object.name
             self.causeOfDeath = previously_living_object.causeOfDeath
             self.classBeforeDeath = type(previously_living_object)
-        else:
-            name, causeOfDeath, classBeforeDeath = args
-            self.name = name
-            self.causeOfDeath = causeOfDeath
-            self.classBeforeDeath = classBeforeDeath
 
