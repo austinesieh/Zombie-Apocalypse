@@ -77,30 +77,11 @@ class Susceptible(Person):
     def __init__(self, name, canvas, object_color):
         super().__init__(name, canvas, object_color)
 
-    def check_infected_near(self, infected_list):
-        close_threshold = 20
-        for infected in infected_list:
-            if distance(self.position, infected.position) < close_threshold:
-                return True
-
-        return False
-
-    def scavenge(self, food_list):
-        find_threshold = 10
-
-        for Food in food_list:
-            if distance(self.position, Food) < find_threshold:
-                self.feed(Food)
-                break
-
     def act(self, infected_list, canvas):
-        #food_list
         self.roam(canvas)
-        if not self.check_infected_near(infected_list):
-            pass
-            #self.scavenge(food_list)
-
-        self.hunger -= .2
+        # --// Slowly lose hunger
+        if random.randint(1,2) == 1:
+            self.hunger -= float(random.randint(0, 2)) / 10
 
 class Infected(Person):
     def __init__(self, name, canvas, object_color):
@@ -138,7 +119,6 @@ class Infected(Person):
             text_label = UI.CREATE_LABEL(canvas, susceptible, "SUSCEPTIBLE SURVIVED ZOMBIE", "white")
             text_labels.append(text_label)
 
-
     def hunt(self, susceptible_list, canvas):
         find_threshold = 20
         interacted = False
@@ -152,7 +132,7 @@ class Infected(Person):
     def act(self, susceptible_list, canvas):
         self.roam(canvas)
         interaction = self.hunt(susceptible_list, canvas)
-        self.hunger -= .5
+        self.hunger -= 1.25
         return interaction
 
 class Removed:

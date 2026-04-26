@@ -1,6 +1,6 @@
-from asyncio import wait
 import time
 import Classes
+import Plot_Module
 import UI_Module as UI
 from Classes import WORLD_SIZE
 
@@ -37,17 +37,25 @@ def zombie_simulation(susceptible_count, infected_count, removed_count):
     all_susceptibles_dead = False
     all_infected_dead = False
 
+    iteration = 0
+    susceptibles_gone_iteration = None
+    infecteds_gone_iteration = None
+
     while alive_population > 0:
+        iteration += 1
+
         UI.CLEAR_LABELS(canvas, Classes.text_labels)
         interaction_occured = False
 
         if not all_susceptibles_dead:
             if susceptible_count <= 0:
                 # --// Show on chart when all susceptibles are dead
+                susceptibles_gone_iteration = iteration
                 all_susceptibles_dead = True
 
         if not all_infected_dead:
             if infected_count <= 0:
+                infecteds_gone_iteration = iteration
                 # --// Show on chart when all infected are dead
                 all_infected_dead = True
 
@@ -58,6 +66,7 @@ def zombie_simulation(susceptible_count, infected_count, removed_count):
             object_is_alive = susceptible_obj.checkalive(canvas)
             if not object_is_alive:
                 alive_population -= 1
+                susceptible_count -= 1
 
                 dead_susceptible = Classes.Removed(False, susceptible_obj)
                 susceptible.remove(susceptible_obj)
@@ -71,14 +80,22 @@ def zombie_simulation(susceptible_count, infected_count, removed_count):
             object_is_alive = infected_obj.checkalive(canvas)
             if not object_is_alive:
                 alive_population -= 1
+                infected_count -= 1
 
                 dead_susceptible = Classes.Removed(False, infected_obj)
                 infected.remove(infected_obj)
                 removed.append(infected_obj)
-        time.sleep(interaction_occured and .2 or .1)
-        window.update()
 
-zombie_simulation(50,10,0)
+        Plot_Module.Iterations.append(iteration)
+        Plot_Module.SusceptiblePopulation.append(susceptible_count)
+        Plot_Module.InfectedPopulation.append(infected_count)
+
+        time.sleep(interaction_occured and .05 or .02)
+        window.update()
+    return susceptibles_gone_iteration, infecteds_gone_iteration
+
+susceptibles_dead, infecteds_dead = zombie_simulation(200,10,0)
+Plot_Module.SHOW_PLOT_CHART(susceptibles_dead, infecteds_dead)
 
 
 
