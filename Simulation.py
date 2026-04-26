@@ -5,8 +5,8 @@ def initialize_population(population_count, population_type, *args):
 
     for i in range(population_count):
         if population_type == Classes.Removed:
+            # --// Because removed objects can be instantiated two ways we use *args
             dead_on_arrival = args[0]
-            print(dead_on_arrival)
             if dead_on_arrival:
                 # --// We create a removed object with only a name
                 population_table.append(population_type(dead_on_arrival, f"{population_type.__name__} #{i}"))
@@ -29,16 +29,18 @@ def zombie_simulation(susceptible_count, infected_count, removed_count):
     all_susceptibles_dead = False
     all_infected_dead = False
 
-    return
     while alive_population <= 0:
-
         if not all_susceptibles_dead:
             if susceptible_count <= 0:
+                # --// Show on chart when all susceptibles are dead
                 all_susceptibles_dead = True
 
         if not all_infected_dead:
             if infected_count <= 0:
+                # --// Show on chart when all infected are dead
                 all_infected_dead = True
+
+
 
 
 

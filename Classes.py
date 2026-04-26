@@ -69,6 +69,13 @@ class Susceptible(Person):
                 self.feed(Food)
                 break
 
+    def act(self, infected_list, food_list):
+        self.roam()
+        if not self.check_infected_near(infected_list):
+            self.scavenge(food_list)
+
+        self.hunger -= 2
+
 class Infected(Person):
     def __init__(self, name):
         super().__init__(name)
@@ -80,6 +87,11 @@ class Infected(Person):
                 susceptible.health = 0
                 self.feed(susceptible)
                 break
+
+    def act(self, susceptible_list):
+        self.roam()
+        self.hunt(susceptible_list)
+        self.hunger -= 2
 
 class Removed:
     def __init__(self, dead_on_arrival, *args):
@@ -95,4 +107,3 @@ class Removed:
             self.name = previously_living_object.name
             self.causeOfDeath = previously_living_object.causeOfDeath
             self.classBeforeDeath = type(previously_living_object)
-
