@@ -20,7 +20,6 @@ class Person:
                 self.position["x"] = 0
             elif (self.position["x"] > WORLD_SIZE):
                 self.position["x"] = WORLD_SIZE
-
             if (self.position["y"] < 0):
                 self.position["y"] = 0
             elif (self.position["y"] > WORLD_SIZE):
@@ -82,7 +81,6 @@ class Infected(Person):
                 self.feed(susceptible)
                 break
 
-
 class Removed:
     def __init__(self, existed, *args):
         if existed:
@@ -95,3 +93,4 @@ class Removed:
             self.name = name
             self.causeOfDeath = causeOfDeath
             self.classBeforeDeath = classBeforeDeath
+
