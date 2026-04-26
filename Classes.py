@@ -6,7 +6,7 @@ def distance(obj1, obj2):
     return ((obj2['x'] - obj1['x'])**2 + (obj2['y'] - obj1['y'])**2) ** 0.5
 
 class Person:
-    def __init__(self, name, canvas):
+    def __init__(self, name, canvas, object_color):
         self.name = name
         self.health = 100
         self.hunger = 100
@@ -17,7 +17,7 @@ class Person:
             self.position['y'],
             self.position['x'] + 5,
             self.position['y'] + 5,
-            fill="white"
+            fill = object_color
         )
 
     def update_screen_position(self, canvas):
@@ -38,8 +38,8 @@ class Person:
             elif (self.position["y"] > WORLD_SIZE):
                 self.position["y"] = WORLD_SIZE
 
-        self.position['x'] += random.randint(-6, 6)
-        self.position['y'] += random.randint(-6, 6)
+        self.position['x'] += random.randint(-10, 10)
+        self.position['y'] += random.randint(-10, 10)
         world_limit()
 
     def feed(self, food):
@@ -63,8 +63,8 @@ class Person:
         return alive
 
 class Susceptible(Person):
-    def __init__(self, name, canvas):
-        super().__init__(name, canvas)
+    def __init__(self, name, canvas, object_color):
+        super().__init__(name, canvas, object_color)
 
     def check_infected_near(self, infected_list):
         close_threshold = 10
@@ -92,8 +92,8 @@ class Susceptible(Person):
         self.hunger -= 2
 
 class Infected(Person):
-    def __init__(self, name, canvas):
-        super().__init__(name, canvas)
+    def __init__(self, name, canvas, object_color):
+        super().__init__(name, canvas, object_color)
 
     def hunt(self, susceptible_list):
         find_threshold = 10

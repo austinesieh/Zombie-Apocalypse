@@ -21,11 +21,11 @@ def initialize_population(population_count, population_type, *args):
                 # --// We create a removed object with a sus or infected
                 pass
         else:
-            population_table.append(population_type(f"{population_type.__name__} #{i}", canvas))
+            population_table.append(population_type(f"{population_type.__name__} #{i}", canvas,
+            population_type == Classes.Susceptible and "white" or "green"))
 
     return population_table
 
-print('ji')
 def zombie_simulation(susceptible_count, infected_count, removed_count):
     total_participants = susceptible_count + infected_count + removed_count
     alive_population = susceptible_count + infected_count
@@ -51,7 +51,6 @@ def zombie_simulation(susceptible_count, infected_count, removed_count):
         # --// Make all susceptible objects act
         for susceptible_obj in susceptible:
             susceptible_obj.act(infected)
-            print('do')
             susceptible_obj.update_screen_position(canvas)
 
             object_is_alive = susceptible_obj.checkalive()
@@ -64,8 +63,9 @@ def zombie_simulation(susceptible_count, infected_count, removed_count):
 
         for infected_obj in infected:
             infected_obj.act(susceptible)
-            object_is_alive = infected_obj.checkalive()
+            infected_obj.update_screen_position(canvas)
 
+            object_is_alive = infected_obj.checkalive()
             if not object_is_alive:
                 alive_population -= 1
 
@@ -74,7 +74,6 @@ def zombie_simulation(susceptible_count, infected_count, removed_count):
                 removed.append(infected_obj)
         time.sleep(.1)
         window.update()
-    print(len(removed))
 
 zombie_simulation(15,30,0)
 
