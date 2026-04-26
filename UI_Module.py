@@ -9,4 +9,16 @@ def SETUP_WORLD(X_SIZE, Y_SIZE):
     canvas.pack()
     return canvas, window
 
+def CREATE_LABEL(canvas, adornee, label_text, label_color):
+    x1, y1, x2, y2 = canvas.coords(adornee.canvasID)
+    x = (x1 + x2) / 2
+    y = y1 - 20
+    text_label = canvas.create_text(x, y, text= label_text, fill= label_color, font=("Arial", 15))
+    return text_label
+
+def CLEAR_LABELS(canvas, label_table):
+    for label in label_table:
+        canvas.delete(label)
+
+
 

@@ -37,9 +37,10 @@ def zombie_simulation(susceptible_count, infected_count, removed_count):
     all_susceptibles_dead = False
     all_infected_dead = False
 
-
     while alive_population > 0:
-        someone_died = False
+        UI.CLEAR_LABELS(canvas, Classes.text_labels)
+        interaction_occured = False
+
         if not all_susceptibles_dead:
             if susceptible_count <= 0:
                 # --// Show on chart when all susceptibles are dead
@@ -56,7 +57,6 @@ def zombie_simulation(susceptible_count, infected_count, removed_count):
 
             object_is_alive = susceptible_obj.checkalive(canvas)
             if not object_is_alive:
-                someone_died = True
                 alive_population -= 1
 
                 dead_susceptible = Classes.Removed(False, susceptible_obj)
@@ -64,7 +64,9 @@ def zombie_simulation(susceptible_count, infected_count, removed_count):
                 removed.append(dead_susceptible)
 
         for infected_obj in infected:
-            infected_obj.act(susceptible, canvas)
+            interaction = infected_obj.act(susceptible, canvas)
+            if interaction:
+                interaction_occured = True
 
             object_is_alive = infected_obj.checkalive(canvas)
             if not object_is_alive:
@@ -73,10 +75,10 @@ def zombie_simulation(susceptible_count, infected_count, removed_count):
                 dead_susceptible = Classes.Removed(False, infected_obj)
                 infected.remove(infected_obj)
                 removed.append(infected_obj)
-        time.sleep(someone_died and .2 or .1)
+        time.sleep(interaction_occured and .2 or .1)
         window.update()
 
-zombie_simulation(200,50,0)
+zombie_simulation(50,10,0)
 
 
 
