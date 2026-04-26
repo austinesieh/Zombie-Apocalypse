@@ -15,15 +15,15 @@ class Person:
         self.canvasID = canvas.create_oval(
             self.position['x'],
             self.position['y'],
-            self.position['x'] + 5,
-            self.position['y'] + 5,
+            self.position['x'] + 10,
+            self.position['y'] + 10,
             fill = object_color
         )
 
     def update_screen_position(self, canvas):
         canvas.coords(
             self.canvasID, self.position['x'], self.position['y'],
-            self.position['x'] + 5, self.position['y'] + 5
+            self.position['x'] + 10, self.position['y'] + 10
         )
 
     def roam(self):
@@ -49,16 +49,17 @@ class Person:
             # --// any other food
             self.hunger += 5
 
-    def die(self, death_cause: str):
+    def die(self, death_cause: str, canvas):
+        canvas.delete(self.canvasID)
         self.causeOfDeath = death_cause
 
-    def checkalive(self):
+    def checkalive(self, canvas):
         alive = (self.health > 0 and self.hunger > 0)
         if not alive:
             if self.health <= 0:
-                self.die("Was murdered")
+                self.die("Was murdered", canvas)
             else:
-                self.die("Died of hunger")
+                self.die("Died of hunger", canvas)
 
         return alive
 
@@ -67,7 +68,7 @@ class Susceptible(Person):
         super().__init__(name, canvas, object_color)
 
     def check_infected_near(self, infected_list):
-        close_threshold = 10
+        close_threshold = 20
         for infected in infected_list:
             if distance(self.position, infected.position) < close_threshold:
                 return True
@@ -89,14 +90,14 @@ class Susceptible(Person):
             pass
             #self.scavenge(food_list)
 
-        self.hunger -= 2
+        self.hunger -= .2
 
 class Infected(Person):
     def __init__(self, name, canvas, object_color):
         super().__init__(name, canvas, object_color)
 
     def hunt(self, susceptible_list):
-        find_threshold = 10
+        find_threshold = 20
         for susceptible in susceptible_list:
             if distance(self.position, susceptible.position) < find_threshold:
                 print('kill')
@@ -107,7 +108,7 @@ class Infected(Person):
     def act(self, susceptible_list):
         self.roam()
         self.hunt(susceptible_list)
-        self.hunger -= 2
+        self.hunger -= .2
 
 class Removed:
     def __init__(self, dead_on_arrival, *args):

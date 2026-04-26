@@ -53,7 +53,7 @@ def zombie_simulation(susceptible_count, infected_count, removed_count):
             susceptible_obj.act(infected)
             susceptible_obj.update_screen_position(canvas)
 
-            object_is_alive = susceptible_obj.checkalive()
+            object_is_alive = susceptible_obj.checkalive(canvas)
             if not object_is_alive:
                 alive_population -= 1
 
@@ -65,7 +65,7 @@ def zombie_simulation(susceptible_count, infected_count, removed_count):
             infected_obj.act(susceptible)
             infected_obj.update_screen_position(canvas)
 
-            object_is_alive = infected_obj.checkalive()
+            object_is_alive = infected_obj.checkalive(canvas)
             if not object_is_alive:
                 alive_population -= 1
 
@@ -75,7 +75,7 @@ def zombie_simulation(susceptible_count, infected_count, removed_count):
         time.sleep(.1)
         window.update()
 
-zombie_simulation(15,30,0)
+zombie_simulation(50,30,0)
 
 
 
