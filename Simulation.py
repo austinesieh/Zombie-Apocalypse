@@ -38,8 +38,9 @@ def zombie_simulation(susceptible_count, infected_count, removed_count):
     all_infected_dead = False
 
     iteration = 0
-    susceptibles_gone_iteration = None
-    infecteds_gone_iteration = None
+    # --// Both get the iteration when a whole population is wiped out
+    SUSCPETIBLES_WIPED_OUT = None
+    INFECTEDS_WIPED_OUT = None
 
     while alive_population > 0:
         iteration += 1
@@ -49,14 +50,14 @@ def zombie_simulation(susceptible_count, infected_count, removed_count):
 
         if not all_susceptibles_dead:
             if susceptible_count <= 0:
-                # --// Show on chart when all susceptibles are dead
-                susceptibles_gone_iteration = iteration
+                # --// Show on chart a line when all susceptibles are dead
+                SUSCPETIBLES_WIPED_OUT = iteration
                 all_susceptibles_dead = True
 
         if not all_infected_dead:
             if infected_count <= 0:
-                infecteds_gone_iteration = iteration
-                # --// Show on chart when all infected are dead
+                INFECTEDS_WIPED_OUT = iteration
+                # --// Show on chart a line when all infected are dead
                 all_infected_dead = True
 
         # --// Make all susceptible objects act
@@ -67,12 +68,14 @@ def zombie_simulation(susceptible_count, infected_count, removed_count):
             if not object_is_alive:
                 alive_population -= 1
                 susceptible_count -= 1
+                removed_count += 1
 
                 dead_susceptible = Classes.Removed(False, susceptible_obj)
                 susceptible.remove(susceptible_obj)
                 removed.append(dead_susceptible)
 
         for infected_obj in infected:
+            # --// When a zombie fights / interacts with a susceptible
             interaction = infected_obj.act(susceptible, canvas)
             if interaction:
                 interaction_occured = True
@@ -81,23 +84,22 @@ def zombie_simulation(susceptible_count, infected_count, removed_count):
             if not object_is_alive:
                 alive_population -= 1
                 infected_count -= 1
+                removed_count += 1
 
                 dead_susceptible = Classes.Removed(False, infected_obj)
                 infected.remove(infected_obj)
                 removed.append(infected_obj)
 
+        # --// Update & add to plot tables each iteration
         Plot_Module.Iterations.append(iteration)
         Plot_Module.SusceptiblePopulation.append(susceptible_count)
         Plot_Module.InfectedPopulation.append(infected_count)
+        Plot_Module.RemovedPopulation.append(removed_count)
 
+        # --// Slow down the simulation slightly if an interation occured
         time.sleep(interaction_occured and .05 or .02)
         window.update()
-    return susceptibles_gone_iteration, infecteds_gone_iteration
+    return SUSCPETIBLES_WIPED_OUT, INFECTEDS_WIPED_OUT
 
-susceptibles_dead, infecteds_dead = zombie_simulation(200,10,0)
-Plot_Module.SHOW_PLOT_CHART(susceptibles_dead, infecteds_dead)
-
-
-
-
-
+ALL_SUSCEPTIBLES_DIED, ALL_INFECTEDS_DIED = zombie_simulation(200,10,0)
+Plot_Module.SHOW_PLOT_CHART(ALL_SUSCEPTIBLES_DIED, ALL_INFECTEDS_DIED)
